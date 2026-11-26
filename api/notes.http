@@ -1,0 +1,65 @@
+@host = http://localhost:5000
+
+### Health check (baza + storage)
+GET {{host}}/api/health
+
+### Lista notatek (wszystkie parametry opcjonalne)
+GET {{host}}/api/notes?search=azure&page=1&pageSize=10
+
+### Pojedyncza notatka
+GET {{host}}/api/notes/1
+
+### Nowa notatka
+POST {{host}}/api/notes
+Content-Type: application/json
+
+{
+  "title": "Pierwsza notatka",
+  "content": "Treść notatki z demo Azure"
+}
+
+### Walidacja: pusty tytuł → 400 ValidationProblem
+POST {{host}}/api/notes
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+### Edycja notatki
+PUT {{host}}/api/notes/1
+Content-Type: application/json
+
+{
+  "title": "Pierwsza notatka (poprawiona)",
+  "content": "Nowa treść"
+}
+
+### Upload zdjęcia (multipart/form-data, pole "file")
+POST {{host}}/api/notes/1/photo
+Content-Type: multipart/form-data; boundary=NotesBoundary
+
+--NotesBoundary
+Content-Disposition: form-data; name="file"; filename="sample.png"
+Content-Type: image/png
+
+< ./samples/sample.png
+--NotesBoundary--
+
+### Upload niedozwolonego typu → 400
+POST {{host}}/api/notes/1/photo
+Content-Type: multipart/form-data; boundary=NotesBoundary
+
+--NotesBoundary
+Content-Disposition: form-data; name="file"; filename="notatka.txt"
+Content-Type: text/plain
+
+To nie jest zdjęcie
+--NotesBoundary--
+
+### Usunięcie notatki (usuwa też zdjęcie i miniaturę)
+DELETE {{host}}/api/notes/1
+
+### Sprzątanie osieroconych zdjęć (klucz z user-secrets: Cleanup:ApiKey)
+POST {{host}}/api/internal/cleanup-orphans
+X-Cleanup-Key: wklej-tutaj-klucz-z-user-secrets
