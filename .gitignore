@@ -425,13 +425,30 @@ FodyWeavers.xsd
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
 
+# ==== azure-demo-notes ====
+
+# Sekrety i ustawienia lokalne (nigdy w repo)
+local.settings.json
+.env.local
+.env.*.local
+*.local
+
 # Lokalna baza SQLite
 notes.db
 notes.db-*
 
 # Frontend (Vite)
+node_modules/
 web/dist/
-*.local
 
-# Azure Functions – lokalne ustawienia z sekretami
-local.settings.json
+# Dane emulatora Azurite
+.azurite/
+__azurite_db_*
+__blobstorage__/
+__queuestorage__/
+__tablestorage__/
+azurite*.log
+
+# Wynik buildu .NET (dla pewności także w podfolderach)
+**/bin/
+**/obj/

@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API (Notes)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build: api",
+      "program": "${workspaceFolder}/api/bin/Debug/net10.0/NotesApi.dll",
+      "cwd": "${workspaceFolder}/api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5000"
+      },
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Functions (Notes)",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:azureFunctions.pickProcess}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API + Functions",
+      "configurations": ["API (Notes)", "Functions (Notes)"],
+      "stopAll": true
+    }
+  ]
+}
