@@ -2,6 +2,9 @@
   <Folder Name="/api/">
     <Project Path="api/NotesApi.csproj" />
   </Folder>
+  <Folder Name="/functions/">
+    <Project Path="functions/NotesFunctions/NotesFunctions.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/NotesApi.Tests/NotesApi.Tests.csproj" />
   </Folder>

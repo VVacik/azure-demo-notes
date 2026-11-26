@@ -432,3 +432,6 @@ notes.db-*
 # Frontend (Vite)
 web/dist/
 *.local
+
+# Azure Functions – lokalne ustawienia z sekretami
+local.settings.json
