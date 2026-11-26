@@ -2,6 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using NotesApi.Notes;
 
 namespace NotesApi.Tests;
@@ -46,6 +49,20 @@ public class NotesEndpointsTests : IDisposable
         var response = await _client.PostAsJsonAsync("/api/notes", new { title = new string('a', 201) });
 
         await AssertValidationErrorAsync(response, "Title");
+    }
+
+    [Fact]
+    public async Task Create_MalformedJson_Returns400EvenWhenBadRequestsThrow()
+    {
+        // Jak w Development: błędne żądanie rzuca wyjątek, który musi zostać zamieniony na 400, a nie 500.
+        var client = _factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+                services.Configure<RouteHandlerOptions>(o => o.ThrowOnBadRequest = true)))
+            .CreateClient();
+        var body = new StringContent("{\"title\": \"abc\"", System.Text.Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync("/api/notes", body);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

@@ -33,7 +33,13 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 var app = builder.Build();
 
 // Nieobsłużone wyjątki i puste odpowiedzi błędów (np. 404) zamieniamy na ProblemDetails.
-app.UseExceptionHandler();
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+    // Błędny JSON w żądaniu to wina klienta (400), a nie serwera (500).
+    StatusCodeSelector = ex => ex is BadHttpRequestException badRequest
+        ? badRequest.StatusCode
+        : StatusCodes.Status500InternalServerError,
+});
 app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
